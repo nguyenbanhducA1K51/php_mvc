@@ -1,0 +1,21 @@
+{
+    "name": "root/rep_mvc",
+    "autoload": {
+        "psr-4": {
+            "Root\\RepMvc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "duc"
+        }
+    ],
+    "autoload":{
+        "psr-4": {
+            "app\\":"./"
+        }
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
