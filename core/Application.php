@@ -3,13 +3,9 @@
 namespace app\core;
 use app\controllers\Controller;
 require_once __DIR__."/Database.php";
-// require_once __DIR__."/Router.php";
-// require_once __DIR__."/Response.php";
-// require_once __DIR__."/Request.php";
-// require_once __DIR__."/../controllers/Controller.php";
-
 use app\core\Request;
 use app\core\Router;
+use app\core\Session;
 class Application
 {
 
@@ -20,6 +16,7 @@ class Application
     public Response $response;
     public Controller $controller;
     public Database $db;
+    public Session $session;
 
     public function __construct($rootPath, array $config)
     {
@@ -29,6 +26,7 @@ class Application
         $this->response = new Response();
         $this->router = new Router($this->request, $this->response);
         $this->db=new Database($config['db']);
+        $this->session = new Session();
     }
     public function run()
     {

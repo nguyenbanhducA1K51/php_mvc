@@ -9,6 +9,7 @@ abstract class Model
     public const RULE_MIN = "min";
     public const RULE_MAX = "max";
     public const RULE_MATCH = "match";
+    public const RULE_UNIQUE = "unique";
 
     public array $errors = [];
     public function loadData($data)
@@ -20,6 +21,13 @@ abstract class Model
             }
         }
     }
+    public function labels(){
+        return [];
+    }
+    public function getLabel($attribute){
+       
+        return $this->labels()[$attribute] ?? $attribute;
+    }
     public function validate()
     {
        
@@ -27,7 +35,6 @@ abstract class Model
             # why $this->{$attribute} ?, because for example, authcontroller has atribute firstname
             $value = $this->{$attribute};
             foreach ($rules as $rule) {
-
                 $ruleName = $rule;
                 if (!is_string($ruleName)) {
                     $ruleName = $rule[0];
@@ -48,8 +55,20 @@ abstract class Model
                 }
 
                 if ($ruleName === self::RULE_MATCH && $value !== $this->{$rule['match']}) {
-
+                    $rule['match'] = $this->getLabel($rule['match']);
                     $this->addError($attribute, self::RULE_MATCH, $rule);
+                }
+                if ($ruleName===self::RULE_UNIQUE){
+                    $className = $rule['class'];
+                    $uniqueAttr = $rule['attribute'] ?? $attribute;
+                    $tableName=$className::tableName();
+                    $statement=Application::$app->db->prepare("SELECT * FROM $tableName WHERE $uniqueAttr= :$uniqueAttr;");
+                    $statement->bindValue(":$uniqueAttr", (string)$value);
+                    $statement->execute();
+                    $record = $statement->fetchObject();
+                    if ($record){
+                        $this->addError($attribute, self::RULE_UNIQUE, ['field'=>$this->getLabel($attribute)]);
+                    }
                 }
             }
         }
@@ -60,19 +79,9 @@ abstract class Model
     {
         $message = $this->errorMessages()[$rule] ?? '';
 
-        // array(2) {
-        //     [0]=>
-        //     string(3) "min"
-        //     ["min"]=>
-        //     int(8)
-        //   }
-        # [0] => min is the first key value pair for the attribute name (e.g, self::RULE_MIN)
-
         foreach ($params as $key => $value) {
             $message = str_replace("{{$key}}", $value, $message);
         }
-        # $fruits = array(); // Create an empty array
-        // $fruits[] = "apple"
         $this->errors[$attribute][] = $message;
     }
     abstract function rules();
@@ -84,8 +93,8 @@ abstract class Model
             self::RULE_EMAIL => "This field must be a valid email address",
             self::RULE_MIN => 'Min length of this field must be {min}',
             self::RULE_MAX => 'Max length of this field must be {max}',
-            self::RULE_MATCH => 'This field must be the same as {match}'
-
+            self::RULE_MATCH => 'This field must be the same as {match}',
+            self::RULE_UNIQUE=>'Record with this {field} already exists'
         ];
     }
     public function hasError($attribute){

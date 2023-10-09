@@ -29,12 +29,22 @@ class User extends DbModel{
      public function attributes(){
         return ['firstname', 'lastname', 'email', 'password','status'];
     }
+    public function labels(){
+        return [
+            'firstname' => 'First name',
+            'lastname' => 'Last name',
+            'email' => 'Email',
+            'password' => 'Password',
+            'passwordConfirm' => ' Confirm password'
+        ];
+    }
     public function rules(){
         return [
             # why "self" and "this"   different
             "firstname"=> [self::RULE_REQUIRED],
             "lastname"=> [self::RULE_REQUIRED],
-            "email"=>[self::RULE_REQUIRED,self::RULE_EMAIL],
+            #check against email column of datatbase of class Use
+            "email"=>[self::RULE_REQUIRED,self::RULE_EMAIL,[self::RULE_UNIQUE, 'class'=> self::class]],
             "password"=> [self::RULE_REQUIRED, [self::RULE_MIN,'min'=>2],[self::RULE_MAX,'max'=>10]],
             "passwordConfirm"=>[self::RULE_REQUIRED,[self::RULE_MATCH,'match'=>'password']]
 

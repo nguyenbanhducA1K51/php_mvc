@@ -3,6 +3,7 @@ namespace app\controllers;
 use app\core\Request;
 use app\controllers\Controller;
 use app\models\User;
+use app\core\Application;
 
 // require_once __DIR__."/../controllers/SiteController.php";
 
@@ -13,12 +14,15 @@ class AuthController extends Controller{
         $this->layout="auth";
     }
     
-    public function login(Request $request){
+    public function login(Request $request, Response $response){
 
-      
+      $loginForm = new LoginForm();
         if ($request->isPost()){
-           
-           return "handle login";
+            if ($loginForm->validate()&& $loginForm->login()){
+                $response->redirect('/');
+                Application::$app->login();
+                return;
+            }            
         }
 
         return $this-> render('login',[]);
@@ -29,8 +33,10 @@ class AuthController extends Controller{
             $user->loadData($request->getBody());
         
             if ( $user->validate()&& $user->save()){
-
-                    return 'Success';
+               
+                Application::$app->session->setFlash('success', 'Thank for registering');
+                Application::$app->response->redirect('/');
+                exit;
             }
             return $this->render("register",["model"=>$user]);
         }

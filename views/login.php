@@ -1,22 +1,22 @@
-<?php
-
+<?php 
 
 ?>
 <h1> Login </h1>
-<form action="" method="post">
-    
-    <div class="mb-3">
-        <label >email</label>
-        <input type="email" class="form-control" name="email">
-    </div>
 
-    <div class="mb-3">
-        <label >Password</label>
-        <input type="password" class="form-control" name="password">
-    </div>
-    <div class ="mt-3">
-    <button type="submit" class="btn btn-primary ">Log in</button>
+<?php
+use app\core\form\Form; ?>
+<?php $form = Form::begin('', "post"); ?>
+<div class="row">
+</div>
+<?php
+echo $form->field($model, "email");
+?>
+<?php
+echo $form->field($model, "password")->passwordField(); ?>
 
-    </div>
-    
-</form>
+<div class="mt-3">
+    <button type="submit" class="btn btn-primary ">Submit</button>
+</div>
+
+
+<?php Form::end() ?>

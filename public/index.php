@@ -16,25 +16,15 @@ $config=[
     ]
 ];
 
-
-
-
-// phpinfo();
-
-// /etc/php/8.1/cli
 $app = new Application(dirname(__DIR__), $config);
 $app->router->get('/', [SiteController::class, 'home']);
 
 # https://php.watch/versions/8.0/non-static-static-call-fatal-error
 #non  static callback is no longer available
 $app->router->get('/contact', [SiteController::class, 'contact']);
-# the function call_user_function in router will execute  function 'contact' in SiteController class
 $app->router->post('/contact', [SiteController::class, 'handleContact']);
-
 $app->router->get('/login', [AuthController::class, 'login']);
 $app->router->post('/login', [AuthController::class, 'login']);
 $app->router->get('/register', [AuthController::class,'register']);
-
 $app->router->post('/register', [AuthController::class,'register']);
-
 $app->run();
