@@ -2,7 +2,7 @@
 namespace app\controllers;
 use app\core\Request;
 use app\controllers\Controller;
-use app\models\RegisterModel;
+use app\models\User;
 
 // require_once __DIR__."/../controllers/SiteController.php";
 
@@ -24,20 +24,17 @@ class AuthController extends Controller{
         return $this-> render('login',[]);
     }
     public function register(Request $request){
-        $registerModel=new RegisterModel();
+        $user=new User();
         if ($request->isPost()){          
-            $registerModel->loadData($request->getBody());
+            $user->loadData($request->getBody());
         
-            if ( $registerModel->validate()&& $registerModel->register()){
+            if ( $user->validate()&& $user->save()){
 
                     return 'Success';
             }
-            // echo '<pre>';
-            // var_dump($registerModel->errors);
-            // echo '</pre>';
-            return $this->render("register",["model"=>$registerModel]);
+            return $this->render("register",["model"=>$user]);
         }
-        return $this-> render("register",["model"=>$registerModel]);
+        return $this-> render("register",["model"=>$user]);
     }
 }
          

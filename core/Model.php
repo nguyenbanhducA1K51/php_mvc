@@ -26,9 +26,6 @@ abstract class Model
         foreach ($this->rules() as $attribute => $rules) {
             # why $this->{$attribute} ?, because for example, authcontroller has atribute firstname
             $value = $this->{$attribute};
-            // echo '<pre>';
-            // var_dump($value);
-            // echo '</pre>';
             foreach ($rules as $rule) {
 
                 $ruleName = $rule;
