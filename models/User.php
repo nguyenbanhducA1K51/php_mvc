@@ -1,8 +1,10 @@
 <?php 
 namespace app\models;
 use app\core\DbModel;
+use app\core\UserModel;
+
 // require_once __DIR__."/Model.php";
-class User extends DbModel{
+class User extends UserModel{
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
     const STATUS_DELETE = 2;
@@ -49,6 +51,13 @@ class User extends DbModel{
             "passwordConfirm"=>[self::RULE_REQUIRED,[self::RULE_MATCH,'match'=>'password']]
 
         ];
+    }
+
+    public function primaryKey(){
+        return "id";
+    }
+    public function getDisplayName(){
+        return $this->firstname . ' ' . $this->lastname;
     }
 
 
